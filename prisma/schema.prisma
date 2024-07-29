@@ -1,0 +1,80 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  MENTOR
+  MENTEE
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Mentor    Mentor?
+  Mentee    Mentee?
+
+  @@map("users")
+}
+
+model Mentor {
+  id     Int      @id @default(autoincrement())
+  bio    String
+  skills String[]
+
+  userId Int  @unique
+  user   User @relation(fields: [userId], references: [id])
+
+  Mentorship   Mentorship[]
+
+
+  @@map("mentors")
+}
+
+model Mentee {
+  id         Int          @id @default(autoincrement())
+  userId     Int          @unique
+  user       User         @relation(fields: [userId], references: [id])
+  Mentorship Mentorship[]
+
+  @@map("mentees")
+}
+
+model Mentorship {
+  id        Int      @id @default(autoincrement())
+  mentorId  Int
+  menteeId  Int
+  topic     String
+  date      DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  mentor Mentor   @relation(fields: [mentorId], references: [id])
+  mentee Mentee   @relation(fields: [menteeId], references: [id])
+  Review Review[]
+
+  @@map("mentorships")
+}
+
+
+model Review {
+  id        Int      @id @default(autoincrement())
+  rating    Int
+  comment   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  mentorshipId Int
+  mentorship   Mentorship @relation(fields: [mentorshipId], references: [id])
+  
+  @@map("reviews")
+}
