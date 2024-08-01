@@ -3,6 +3,7 @@ import { MentorsRepository } from "../mentor-repository";
 import { prisma } from "@/lib/prisma";
 
 export class PrismaMentorRepository implements MentorsRepository {
+
     async create(data: Prisma.MentorCreateInput) {
         const mentor = await prisma.mentor.create({
             data
@@ -44,6 +45,23 @@ export class PrismaMentorRepository implements MentorsRepository {
         }))
 
         return formattedMentors
+    }
+
+    async findMentorById(mentorId: number) {
+        const mentor = await prisma.mentor.findFirst({
+            where: {
+                id: mentorId
+            },
+            include: {
+                user: true
+            }
+        })
+
+        if(!mentor) {
+            return null
+        }
+
+        return mentor
     }
     
 }

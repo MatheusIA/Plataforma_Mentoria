@@ -10,5 +10,25 @@ export class PrismaMenteeRepository implements MenteesRepository {
 
         return mentee
     }
+
+    async findMenteeById(menteeId: number) {
+        console.log("Prisma Parametro: ", menteeId)
+        const mentee = await prisma.mentee.findFirst({
+            where: {
+                userId: menteeId
+            },
+            include: {
+                user: true
+            }
+        })
+
+        console.log("Mentee Prisma: ", mentee)
+
+        if(!mentee) {
+            return null
+        }
+
+        return mentee
+    }
     
 }

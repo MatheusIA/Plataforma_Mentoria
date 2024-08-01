@@ -33,6 +33,7 @@ export class RegisterUserUseCase {
         bio,
         skills = []
     }: RegisterUserRequest): Promise<RegisterUserResponse> {
+
         const password_hash = await hash(password, 6)
 
         const userWithSameEmail = await this.usersRepository.findByEmail(email)
@@ -63,7 +64,8 @@ export class RegisterUserUseCase {
         }
 
         return {
-            user
+            user,
+
         }
     }
 }

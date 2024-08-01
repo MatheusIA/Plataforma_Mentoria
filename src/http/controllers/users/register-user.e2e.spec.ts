@@ -16,7 +16,7 @@ describe("Register User (e2e)", () => {
         .post('/register/user')
         .send({
             name: "Jonh Doe",
-            email: "jonhdoe@example.com",
+            email: "jonhdoe1@example.com",
             password: "123456",
             role: "MENTOR",
             bio: "Mentor with experience in NodeJS and JavaScript",
@@ -27,7 +27,7 @@ describe("Register User (e2e)", () => {
         expect(response.body.user).toEqual(expect.objectContaining({
             id: 1,
             name: "Jonh Doe",
-            email: "jonhdoe@example.com",
+            email: "jonhdoe1@example.com",
             role: "MENTOR"
         }))
     })
@@ -43,8 +43,7 @@ describe("Register User (e2e)", () => {
             bio: "",
             skills: []
         })
-
-        console.log(response.error)
+        
         expect(response.statusCode).toEqual(201)
         expect(response.body.user).toEqual(expect.objectContaining({
             id: 2,

@@ -29,6 +29,7 @@ export async function registerUser(request: FastifyRequest, reply: FastifyReply)
 
         const { password: _, ...userWithoutPassword } = user;
 
+
         return reply.status(201).send({
             user: userWithoutPassword
         });

@@ -3,7 +3,7 @@ import { UsersRepository } from "../users-repository";
 import { prisma } from "@/lib/prisma";
 
 export class PrismaUsersRepository implements UsersRepository {
-    async create(data: Prisma.UserCreateInput, skills: string[]) {
+    async create(data: Prisma.UserCreateInput) {
         const user = await prisma.user.create({
             data
         })

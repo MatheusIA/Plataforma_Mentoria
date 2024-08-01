@@ -22,7 +22,7 @@ export default <Environment>{
     name: 'prisma',
     transformMode: "ssr",
     async setup() {
-        const schema = randomUUID()
+         const schema = randomUUID()
         const databaseURL = generateDatabaseURL(schema)
 
         process.env.DATABASE_URL = databaseURL

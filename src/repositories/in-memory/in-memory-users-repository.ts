@@ -31,4 +31,8 @@ export class InMemoryUsersRepository implements UsersRepository {
 
         return user
     }
+
+    async searchAllUsers(page: number) {
+        return this.items.slice((page - 1) * 20, page * 20)
+    }
 }

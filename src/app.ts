@@ -9,6 +9,9 @@ import { ZodError } from "zod";
 import { fastifyJwt } from "@fastify/jwt";
 import { authenticateRoutes } from "./http/controllers/authenticate/routes";
 import { mentorsRoute } from "./http/controllers/mentors/routes";
+import { mentorshipRoutes } from "./http/controllers/mentorship/routes";
+import { authRoutes } from "./http/controllers/auth/routes";
+import { reviewRoutes } from "./http/controllers/reviews/routes";
 
 export const app = fastify();
 
@@ -57,7 +60,9 @@ app.register(fastifyJwt, {
 app.register(authenticateRoutes)
 app.register(usersRoutes);
 app.register(mentorsRoute)
-
+app.register(mentorshipRoutes)
+app.register(authRoutes)
+app.register(reviewRoutes)
 
 app.setErrorHandler((error, _, reply) => {
     if (error instanceof ZodError) {

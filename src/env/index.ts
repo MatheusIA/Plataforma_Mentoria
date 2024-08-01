@@ -4,7 +4,11 @@ import z from "zod"
 const envSchema = z.object({
     NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
     JWT_SECRET: z.string(),
-    PORT: z.coerce.number().default(3333)
+    PORT: z.coerce.number().default(3333),
+    GOOGLE_CLIENT_ID: z.string(),
+    GOOGLE_CLIENT_SECRET: z.string(),
+    GOOGLE_ACCESS_TOKEN: z.string(),
+    GOOGLE_REFRESH_TOKEN: z.string()
 })
 
 const _env = envSchema.safeParse(process.env)

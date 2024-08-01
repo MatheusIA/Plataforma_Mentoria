@@ -26,8 +26,8 @@ export async function usersRoutes(app: FastifyInstance) {
                             email: z.string(),
                             role: z.enum(["MENTEE", "MENTOR"]),
                             bio: z.string().optional(),
-                            skills: z.array(z.string()).optional()
-                        })
+                            skills: z.array(z.string()).optional(),
+                        }),
                     })
                 }
             }
