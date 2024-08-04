@@ -9,6 +9,7 @@ import { NotFoundMenteeError } from "../_errors/mentee/not-found-mentee-error";
 import { toZonedTime } from 'date-fns-tz';
 import { checkAvailability } from "@/domain/googleAPI/google-calendar";
 import { AvailableTimeError } from "../_errors/mentorship/available-time-error";
+import { InvalidDateError } from "../_errors/mentorship/invalid-date-error";
 
 interface RegisterMentorshipRequest {
     mentorId: number
@@ -48,9 +49,14 @@ export class RegisterMentorshipUseCase {
             throw new NotFoundMenteeError()
         }
 
+        const now = new Date();
         const utcStartDateTime = toZonedTime(dateGoogle, 'America/Sao_Paulo');
         const utcEndDateTime = new Date(utcStartDateTime.getTime() + 60 * 60 * 1000)
 
+        if (utcStartDateTime < now) {
+            throw new InvalidDateError();
+        }
+        
         const isAvailable = await checkAvailability(utcStartDateTime, utcEndDateTime)
 
         if(!isAvailable){
@@ -72,26 +78,33 @@ export class RegisterMentorshipUseCase {
             ]
         }
 
+        let eventId: string | undefined | null;
+
         try {
             const { data } = await calendar.events.insert({
                 calendarId: 'primary',
                 requestBody: event
             });
 
-            console.log("Data: ", data);
+            eventId = data.id
 
-            } catch (error) {
-                console.error('Error creating event:', error);
-            }
+        } catch (error) {
+            console.error('Error creating event:', error);
+        }
 
-        console.log("Date Caso de Uso: ", date)
+         if (!eventId) {
+            throw new Error('Failed to retrieve Google Calendar event ID');
+        }
+            
         const mentorship = await this.mentorShipRepository.create({
             mentor: { connect: {id: mentorId}},
             mentee: { connect: {id: mentee.id}},
             topic,
-            date
+            date,
+            googleEventId: eventId
         })
 
+        console.log("Register Mentorship UseCase: ", mentorship)
         return {
             mentorship
         }

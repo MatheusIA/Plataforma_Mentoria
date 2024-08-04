@@ -3,15 +3,16 @@ import { MenteesRepository } from "../mentee-repository";
 
 export class InMemoryMenteeRepository implements MenteesRepository {
     public items: (Mentee & { user: User})[] = []
-    private userIdCounter = 1;
 
     async create(data: Prisma.MenteeCreateInput) {
+        const newId = this.items.length + 1;
+
         const user = {
-            id: this.userIdCounter++,
-            name: "Jonh Doe",
-            email: "jonhDoe@example.com",
+            id: newId,
+            name: `Jonh Doe ${newId}`,
+            email: `jonhDoe${newId}@example.com`,
             password: "123456",
-            role: Role.MENTOR,
+            role: Role.MENTEE,
             createdAt: new Date(),
             updatedAt: new Date(),
           };
@@ -27,6 +28,29 @@ export class InMemoryMenteeRepository implements MenteesRepository {
         return mentee
     }
 
+    async update(userId: number, data: Prisma.MenteeUpdateInput) {
+        const menteeIndex = this.items.findIndex((item) => item.userId === userId)
+
+        if(menteeIndex >= 0) {
+            const mentee = this.items[menteeIndex];
+
+            const updateUser = {
+                ...mentee.user,
+                ...data,
+                updateAt: new Date()
+            }
+            
+            this.items[menteeIndex] = {
+                ...mentee,
+                user: updateUser
+            }
+
+            return this.items[menteeIndex]
+        }
+
+        return null
+    }
+
     async findMenteeById(menteeId: number) {
         const mentee = this.items.find(item => item.id === menteeId)
 
@@ -36,5 +60,23 @@ export class InMemoryMenteeRepository implements MenteesRepository {
 
         return mentee
     }
+
+    async findMenteeByUserId(userId: number) {
+        const mentee = this.items.find(item => item.id === userId) 
+        
+        if(!mentee){
+            return null
+        }
+
+        return mentee
+
+    }
+
+
+    async searchAllMentee(page: number) {
+        return this.items.slice((page - 1) * 20, page * 20)
+    }
+
+    
     
 }

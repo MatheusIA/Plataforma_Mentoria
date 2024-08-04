@@ -1,4 +1,5 @@
 import { makeSearchAllMentorsUseCase } from "@/domain/factories/mentor/make-search-all-mentors-use-case";
+import { NotFoundUsersError } from "@/domain/use-cases/_errors/users/not-found-users-error";
 import { FastifyReply, FastifyRequest } from "fastify";
 import z from "zod";
 
@@ -22,6 +23,14 @@ export async function searchAllMentorsUser(request: FastifyRequest, reply: Fasti
         })
 
     } catch (err) {
+        if(err instanceof NotFoundUsersError){
+            return reply.status(404).send({message: err.message})
 
+        } else if (err instanceof z.ZodError){
+            return reply.status(400).send({message: "Invalid imput data.", errros: err.message})
+
+        } else {
+            return reply.status(500).send({ message: "Internal Server Error"})
+        }
     }
 }

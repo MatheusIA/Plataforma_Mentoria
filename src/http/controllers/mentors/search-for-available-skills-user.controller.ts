@@ -15,7 +15,7 @@ export async function searchForAvailableSkills(request: FastifyRequest, reply: F
 
     } catch (err) {
         if(err instanceof NotFoundAvailableSkillsError){
-            return reply.status(409).send({ message: err.message})
+            return reply.status(404).send({ message: err.message})
 
         } else if (err instanceof z.ZodError) {
             return reply.status(400).send({ message: 'Invalid input data', errors: err.message})

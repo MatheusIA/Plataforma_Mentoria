@@ -4,21 +4,11 @@ import z from "zod";
 import { registerMentorship } from "./register-mentorship.controller";
 import { google } from "googleapis";
 import dotenv from 'dotenv';
+import { updateMentorship } from "./update-mentorship.controller";
+import { getMentorshipMentorId } from "./get-mentorships-mentor-id.controller";
+import { verifyRoleType } from "@/http/middlewares/verify-role-type";
+import { getMentorshipMenteeId } from "./get-mentorship-mentee-id.controller";
 
-dotenv.config();
-
-const oAuth2Client = new google.auth.OAuth2(
-  process.env.GOOGLE_CLIENT_ID,
-  process.env.GOOGLE_CLIENT_SECRET,
-  'http://localhost:3333/redirect'
-);
-
-oAuth2Client.setCredentials({
-  access_token: process.env.GOOGLE_ACCESS_TOKEN,
-  refresh_token: process.env.GOOGLE_REFRESH_TOKEN
-});
-
-console.log('OAuth2 Client Credentials:', oAuth2Client.credentials);
 
 export async function mentorshipRoutes(app: FastifyInstance){
     app.setErrorHandler((error, request, reply) => {
@@ -31,14 +21,11 @@ export async function mentorshipRoutes(app: FastifyInstance){
         .post('/register/mentorship', {
             schema: {
                 summary: "Register a new Mentorship",
-                tags: ["Mentorship"],
+                tags: ["Mentorships"],
                 body: z.object({
                     mentorId: z.number(),
                     menteeId: z.number(),
                     topic: z.string(),
-                    // date: z.string().refine(value => !isNaN(Date.parse(value)), {
-                    //     message: "Invalid date format. Please use ISO 8601 format."
-                    // }),
                     date: z.string(),
                     dateGoogle: z.string().refine(value => !isNaN(Date.parse(value)), {
                         message: "Invalid date format. Please use ISO 8601 format."
@@ -51,7 +38,8 @@ export async function mentorshipRoutes(app: FastifyInstance){
                             mentorId: z.number(),
                             menteeId: z.number(),
                             topic: z.string(),
-                            date: z.date(), 
+                            date: z.date(),
+                            googleEventId: z.string(), 
                             createdAt: z.date(),
                             updatedAt: z.date()
                         })
@@ -61,4 +49,127 @@ export async function mentorshipRoutes(app: FastifyInstance){
             }
 
         }, registerMentorship)
+
+    app
+        .withTypeProvider<ZodTypeProvider>()
+        .put('/update/mentorship/:id', {
+            schema: {
+                summary: "Update Mentorship",
+                tags: ['Mentorships'],
+                params: z.object({
+                    id: z.string()
+                }),
+                body: z.object({
+                    mentorId: z.number(),
+                    menteeId: z.number(),
+                    topic: z.string(),
+                    date: z.string(),
+                    dateGoogle: z.string().refine(value => !isNaN(Date.parse(value)), {
+                        message: "Invalid date format. Please use ISO 8601 format."
+                    }),
+                    googleEventId: z.string()
+                }),
+                response: {
+                    201: z.object({
+                        mentorship: z.object({
+                            id: z.number(),
+                            mentorId: z.number(),
+                            menteeId: z.number(),
+                            topic: z.string(),
+                            date: z.date(),
+                            googleEventId: z.string(), 
+                            createdAt: z.date(),
+                            updatedAt: z.date()
+                        })
+                        
+                    })
+                }
+            }
+        }, updateMentorship)
+
+    app
+        .withTypeProvider<ZodTypeProvider>()
+        .get('/get/mentorship/mentorId/:mentorId', {
+            schema: {
+                summary: "Get mentorships by mentor id",
+                tags: ["Mentorships"],
+                params: z.object({
+                    mentorId: z.string()
+                }),
+                response: {
+                    200: z.object({
+                        mentorship: z.array(
+                            z.object({
+                                id: z.number(),
+                                mentorId: z.number(),
+                                menteeId: z.number(),
+                                topic: z.string(),
+                                date: z.date(),
+                                googleEventId: z.string(),
+                                createdAt: z.date(),
+                                updatedAt: z.date(),
+                                mentee: z.object({
+                                    id: z.number(),
+                                    userId: z.number(),
+                                    user: z.object({
+                                        name: z.string(),
+                                        email: z.string()
+                                    })
+                                }),
+                                mentor: z.object({
+                                    id: z.number(),
+                                    bio: z.string(),
+                                    skills: z.array(z.string()),
+                                    userId: z.number(),
+                                    user: z.object({
+                                        name: z.string(),
+                                        email: z.string()
+                                    })
+                                })
+                            })
+                        )
+                    })
+                }
+            }
+
+        }, getMentorshipMentorId)
+
+    app
+        .withTypeProvider<ZodTypeProvider>()
+        .get('/get/mentorship/menteeId/:menteeId', {
+            schema: {
+                summary: "Get mentorships by mentee id",
+                tags: ["Mentorships"],
+                params: z.object({
+                    menteeId: z.string()
+                }),
+                response: {
+                    200: z.object({
+                        mentorship: z.array(
+                            z.object({
+                                id: z.number(),
+                                mentorId: z.number(),
+                                menteeId: z.number(),
+                                topic: z.string(),
+                                date: z.date(),
+                                googleEventId: z.string(),
+                                createdAt: z.date(),
+                                updatedAt: z.date(),
+                                mentor: z.object({
+                                    id: z.number(),
+                                    bio: z.string(),
+                                    skills: z.array(z.string()),
+                                    userId: z.number(),
+                                    user: z.object({
+                                        name: z.string(),
+                                        email: z.string()
+                                    })
+                                })
+                            })
+                        )
+                    })
+                }
+            }
+
+        }, getMentorshipMenteeId)
 }

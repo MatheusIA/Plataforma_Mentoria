@@ -1,9 +1,12 @@
-import { Prisma, Mentor } from "@prisma/client";
+import { Prisma, Mentor, User } from "@prisma/client";
 import { MentorsRepository } from "../mentor-repository";
 import { prisma } from "@/lib/prisma";
 
 export class PrismaMentorRepository implements MentorsRepository {
 
+    // async update(data: Prisma.MentorUpdateInput, dataUser: User): Promise<Mentor> {
+    //     data.user?.update.
+    // }
     async create(data: Prisma.MentorCreateInput) {
         const mentor = await prisma.mentor.create({
             data
@@ -60,6 +63,58 @@ export class PrismaMentorRepository implements MentorsRepository {
         if(!mentor) {
             return null
         }
+
+        return mentor
+    }
+
+    async findMentorByUserId(userId: number) {
+        const mentor = await prisma.mentor.findUnique({
+            where: {
+                userId: userId
+            },
+            include: {
+                user: true
+            }
+        })
+
+        if(!mentor) {
+            return null
+        }
+
+        return mentor
+    }
+    
+
+    async update(data: Mentor) {
+        // const mentor = await prisma.mentor.update({
+        //     where: {
+        //         id: data.id
+        //     },
+        //     data: {
+        //         bio: data.bio,
+        //         skills: data.skills,
+        //         user: {
+        //             update: {
+        //                 name: dataUser.name,
+        //                 email: dataUser.email,
+        //                 password: dataUser.password
+        //             }
+        //         }
+        //     },
+        //     include: {
+        //         user: true
+        //     }
+        // })
+
+        const mentor = await prisma.mentor.update({
+            where: {
+                id: data.id
+            },
+            data: {
+                bio: data.bio,
+                skills: data.skills
+            }
+        })
 
         return mentor
     }

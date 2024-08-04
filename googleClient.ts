@@ -21,6 +21,4 @@ oAuth2Client.setCredentials({
   refresh_token: process.env.GOOGLE_REFRESH_TOKEN
 });
 
-console.log('OAuth2 Client Credentials googleClint:', oAuth2Client.credentials);
-
 export { oAuth2Client, SCOPES };

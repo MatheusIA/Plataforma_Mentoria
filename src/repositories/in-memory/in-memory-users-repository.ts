@@ -21,11 +21,33 @@ export class InMemoryUsersRepository implements UsersRepository {
 
         return user
     }
-    
+
+    async update(data: User) {
+        const userIndex = this.items.findIndex((item) => item.id === data.id);
+
+            if(userIndex >= 0) {
+                this.items[userIndex].name = data.name,
+                this.items[userIndex].email = data.email,
+                this.items[userIndex].password = data.password
+            }
+
+        return data
+    }
+        
     async findByEmail(email: string) {
         const user = this.items.find(item => item.email === email)
 
         if(!user) {
+            return null
+        }
+
+        return user
+    }
+
+    async findById(userId: number) {
+        const user = this.items.find(item => item.id === userId)
+
+        if(!user){
             return null
         }
 

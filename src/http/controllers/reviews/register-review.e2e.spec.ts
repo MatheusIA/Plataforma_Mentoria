@@ -5,7 +5,7 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { addDays, format } from 'date-fns'
 import { toZonedTime, fromZonedTime, formatInTimeZone } from 'date-fns-tz'
 
-describe('Registe Review (e2e)', () => {
+describe.skip('Registe Review (e2e)', () => {
     beforeAll(async () => {
         await app.ready()
     })

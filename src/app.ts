@@ -12,6 +12,8 @@ import { mentorsRoute } from "./http/controllers/mentors/routes";
 import { mentorshipRoutes } from "./http/controllers/mentorship/routes";
 import { authRoutes } from "./http/controllers/auth/routes";
 import { reviewRoutes } from "./http/controllers/reviews/routes";
+import { menteeRoutes } from "./http/controllers/mentees/routes";
+import fastifyCookie from "@fastify/cookie";
 
 export const app = fastify();
 
@@ -55,11 +57,13 @@ app.register(fastifyJwt, {
         signed: false,
     },
 })
+app.register(fastifyCookie)
 
 // Rotas
 app.register(authenticateRoutes)
 app.register(usersRoutes);
 app.register(mentorsRoute)
+app.register(menteeRoutes)
 app.register(mentorshipRoutes)
 app.register(authRoutes)
 app.register(reviewRoutes)

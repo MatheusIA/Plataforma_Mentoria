@@ -1,8 +1,9 @@
-import { Prisma, Mentee } from "@prisma/client";
+import { Prisma, Mentee, User } from "@prisma/client";
 import { MenteesRepository } from "../mentee-repository";
 import { prisma } from "@/lib/prisma";
 
 export class PrismaMenteeRepository implements MenteesRepository {
+
     async create(data: Prisma.MenteeCreateInput) {
         const mentee = await prisma.mentee.create({
             data
@@ -11,18 +12,25 @@ export class PrismaMenteeRepository implements MenteesRepository {
         return mentee
     }
 
-    async findMenteeById(menteeId: number) {
-        console.log("Prisma Parametro: ", menteeId)
-        const mentee = await prisma.mentee.findFirst({
+    async update(userId: number, data: Prisma.MenteeUpdateInput) {
+       const mentee = await prisma.mentee.update({
             where: {
-                userId: menteeId
+                userId: userId
+            },
+            data: data
+       })
+    }
+
+
+    async findMenteeById(menteeId: number) {
+        const mentee = await prisma.mentee.findUnique({
+            where: {
+                id: menteeId
             },
             include: {
                 user: true
             }
         })
-
-        console.log("Mentee Prisma: ", mentee)
 
         if(!mentee) {
             return null
@@ -30,5 +38,45 @@ export class PrismaMenteeRepository implements MenteesRepository {
 
         return mentee
     }
+
+    
+    async findMenteeByUserId(userId: number) {
+        const mentee = await prisma.mentee.findUnique({
+            where: {
+                userId: userId
+            },
+            include: {
+                user: true
+            }
+        })
+
+        if(!mentee) {
+            return null
+        }
+
+        return mentee
+    }
+
+    async searchAllMentee(page: number) {
+        const mentees = await prisma.mentee.findMany({
+            include: {
+                user: true
+            },
+            skip: (page - 1) * 10,
+            take: 10
+        })
+
+        const formattedMentees = mentees.map(mentee => ({
+            id: mentee.id,
+            userId: mentee.userId,
+            user: {
+                name: mentee.user.name,
+                email: mentee.user.email
+            }
+        }))
+
+        return formattedMentees
+    }
+
     
 }

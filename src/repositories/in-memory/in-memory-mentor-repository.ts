@@ -9,9 +9,9 @@ export class InMemoryMentorRepository implements MentorsRepository {
         const newId = this.items.length + 1
 
         const user = {
-            id: this.userIdCounter++,
-            name: "Jonh Doe",
-            email: "jonhDoe@example.com",
+            id: newId,
+            name: `Jonh Doe ${newId}`,
+            email: `jonhDoe${newId}@example.com`,
             password: "123456",
             role: Role.MENTOR,
             createdAt: new Date(),
@@ -29,6 +29,17 @@ export class InMemoryMentorRepository implements MentorsRepository {
         this.items.push(mentor)
 
         return mentor
+    }
+
+    async update(data: Mentor) {
+        const mentorIndex = this.items.findIndex((item) => item.id === data.id)
+
+        if(mentorIndex >= 0) {
+            this.items[mentorIndex].bio = data.bio,
+            this.items[mentorIndex].skills = data.skills
+        }
+
+        return data
     }
 
     async searchSkills() {
@@ -49,6 +60,16 @@ export class InMemoryMentorRepository implements MentorsRepository {
 
     async findMentorById(mentorId: number) {
         const mentor = this.items.find(item => item.id === mentorId)
+
+        if(!mentor){
+            return null
+        }
+
+        return mentor
+    }
+
+    async findMentorByUserId(userId: number) {
+        const mentor = this.items.find(item => item.id === userId)
 
         if(!mentor){
             return null
