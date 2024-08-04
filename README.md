@@ -41,21 +41,23 @@ O projeto segue uma arquitetura modular com a seguinte estrutura de diretórios:
 
 2. **Inicie o Banco de Dados com o Docker Compose**
 
-   Comando no terminal: docker-compose up -d
+   Comando no terminal: 
+   ```bash
+   docker-compose up -d
 
 3. **Instale as Dependências**
 
    No terminal, execute o seguinte comando:
-
+   ```bash
    npm install
 
 4. **Instale as Dependencias para os testes e2e**
 
    No terminal, execute os seguintes comandos:
+   ```bash
+   npm run test:create-prisma-environment  # Para fazer o link com a pasta vites-environment-prisma, seguindo o padrão do vitest
+   npm run test:install-prisma-environment  # Para instalar as dependências do teste
 
-   1. npm run test:create-prisma-environment (Para fazer o link com a pasta vites-environment-prisma, seguindo o padrão do vitest )
-
-   2. npm run test:install-prisma-enviroment (Para instalar as dependicas do teste)
 
 5. **Configure o arquivo .env**
 
@@ -64,23 +66,25 @@ O projeto segue uma arquitetura modular com a seguinte estrutura de diretórios:
 6. **Execute as migrações do Prisma**
 
    No terminal, execute o seguinte comando:
+   ```bash
    npx prisma migrate dev
 
 7. **Faça o build da aplicação**
 
    No terminal, execute o seguinte comando:
+      ```bash
    npm run build
 
 8. **Inicie o servidor**
 
    No terminal, execute o seguinte comando:
-
+      ```bash
    npm run start:dev
 
 9. **Acesso a documentação da API**
 
    No terminal, execute o comando:
-
+      ```bash
    npm run start:dev
 
    Após isso, a documentação Swagger está disponível em http://localhost:3000/docs
@@ -88,6 +92,7 @@ O projeto segue uma arquitetura modular com a seguinte estrutura de diretórios:
 10. **Execute os testes unitários e e2e**
 
    No terminal, execute os seguintes comandos:
+      ```bash
    
    Teste unitário: npm run test
    Teste e2e: npm run test:e2e
