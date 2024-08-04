@@ -1,4 +1,4 @@
-# Nome do Projeto
+# Plataforma Mentoria
 
 Plataforma de Mentorias. 
 Esta plataforma deve atender a dois públicos distintos: pessoas que possuem habilidades e estão dispostas a oferecer mentoria, e pessoas que precisam de mentoria nessas habilidades
