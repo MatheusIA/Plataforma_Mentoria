@@ -92,9 +92,9 @@ O projeto segue uma arquitetura modular com a seguinte estrutura de diretórios:
 10. **Execute os testes unitários e e2e**
 
    No terminal, execute os seguintes comandos:
-      ```bash
-   
-   Teste unitário: npm run test
-   Teste e2e: npm run test:e2e
-   Teste e2e modo watch: npm run test:e2e:watch
+     
+    ```bash   
+   npm run test # Teste unitário
+   npm run test:e2e # Teste e2e
+   npm run test:e2e:watch # Teste e2e modo watch
 
